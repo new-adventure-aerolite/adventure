@@ -1,2 +1,3 @@
-## This is where the kubernetes cluster provision Terraform manifest lives in
+# Deploy AKS by terraform and terragrunt
 
+These scripts are used for Azure Kubernetes Cluster deployment in Azure. 
