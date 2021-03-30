@@ -29,7 +29,8 @@ spec:
   - demo
   http:
   - match:
-    - port: 80
+    - uri:
+        exact: /
     route:
     - destination:
         host: frontend.rpg-test.svc.cluster.local
@@ -58,8 +59,6 @@ spec:
         port:
           number: 8000
   - match:
-    - uri:
-        exact: /
     - uri:
        exact: /passcode
     - uri:

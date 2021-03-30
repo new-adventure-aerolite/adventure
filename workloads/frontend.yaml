@@ -18,7 +18,7 @@ spec:
       serviceAccountName: frontend
       containers:
       - name: frontend
-        image: tqhuang2021/frontend@sha256:bcc401767c7de2fe586953ddc379753e8ae9fa1ff468cbaae9eaa95626bc37bd
+        image: tqhuang2021/frontend@sha256:eca0695609c684fd03845ecca23c184118ad0f6a5962641a712282be5701b30b
         ports:
         - name: http
           containerPort: 80
