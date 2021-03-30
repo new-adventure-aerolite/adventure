@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: frontend
+  name: frontend
+  namespace: rpg-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      serviceAccountName: frontend
+      containers:
+      - name: frontend
+        image: tqhuang2021/frontend@sha256:bcc401767c7de2fe586953ddc379753e8ae9fa1ff468cbaae9eaa95626bc37bd
+        ports:
+        - name: http
+          containerPort: 80
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    app: frontend
+  name: frontend
+  namespace: rpg-test
+imagePullSecrets:
+- name: pipeline
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  namespace: rpg-test
+spec:
+  type: ClusterIP
+  ports:
+  - name: frontend
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: frontend

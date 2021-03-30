@@ -29,6 +29,13 @@ spec:
   - demo
   http:
   - match:
+    - port: 80
+    route:
+    - destination:
+        host: frontend.rpg-test.svc.cluster.local
+        port:
+          number: 80
+  - match:
     - uri:
         exact: /session
     - uri:
