@@ -13,9 +13,9 @@ spec:
       protocol: HTTPS
     tls:
       mode: SIMPLE
-      credentialName: tlstest
+      credentialName: rpg-game-tls-secret
     hosts:
-    - "rpg.eastus.cloudapp.azure.com"
+    - "rpg-game.eastus.cloudapp.azure.com"
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
@@ -24,7 +24,7 @@ metadata:
   namespace: rpg-test
 spec:
   hosts:
-  - "rpg.eastus.cloudapp.azure.com"
+  - "rpg-game.eastus.cloudapp.azure.com"
   gateways:
   - demo
   http:

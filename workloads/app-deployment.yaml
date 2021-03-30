@@ -78,10 +78,10 @@ spec:
       - name: auth-server
         image: tqhuang2021/auth-server@sha256:429c0cf97ef6cce106c796288037026f19dbcf367e1ba42016ca615660246a4c
         args:
-        - --issuer=https://rpg.eastus.cloudapp.azure.com/dex/dex
+        - --issuer=https://rpg-game.eastus.cloudapp.azure.com/dex/dex
         - --port=5555
         - --grpc-port=6666
-        - --redirect-uri=https://rpg.eastus.cloudapp.azure.com/auth/callback
+        - --redirect-uri=https://rpg-game.eastus.cloudapp.azure.com/auth/callback
         - --client-id=new-test-id
         ports:
         - name: http
@@ -207,7 +207,7 @@ metadata:
   namespace: rpg-test
 data:
   config.yaml: |
-    issuer: https://rpg.eastus.cloudapp.azure.com/dex/dex
+    issuer: https://rpg-game.eastus.cloudapp.azure.com/dex/dex
     storage:
       type: kubernetes
       config:
@@ -221,7 +221,7 @@ data:
       config:
         clientID: 81891bded5d946528777
         clientSecret: 43d330874de294dc7f420e88b9a343bc80adb8dc
-        redirectURI: https://rpg.eastus.cloudapp.azure.com/dex/dex/callback
+        redirectURI: https://rpg-game.eastus.cloudapp.azure.com/dex/dex/callback
         orgs:
         - name: new-adventure-aerolite
         teamNameField: slug
@@ -233,7 +233,7 @@ data:
     staticClients:
     - id: new-test-id
       redirectURIs:
-      - 'https://rpg.eastus.cloudapp.azure.com/auth/callback'
+      - 'https://rpg-game.eastus.cloudapp.azure.com/auth/callback'
       name: 'Example App'
       secret: ZXhhbXBsZS1hcHAtc2VjcmV0
     enablePasswordDB: true
