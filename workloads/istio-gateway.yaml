@@ -31,11 +31,17 @@ spec:
   - match:
     - uri:
         exact: /
+    - uri:
+        prefix: /dist
+    - uri:
+        prefix: /static
+    - uri:
+        prefix: /manifest
     route:
     - destination:
         host: frontend.rpg-test.svc.cluster.local
         port:
-          number: 80
+          number: 8080
   - match:
     - uri:
         exact: /session

@@ -18,7 +18,7 @@ spec:
       serviceAccountName: frontend
       containers:
       - name: frontend
-        image: tqhuang2021/frontend@sha256:eca0695609c684fd03845ecca23c184118ad0f6a5962641a712282be5701b30b
+        image: demoapp88985792.azurecr.io/frontend:latest
         ports:
         - name: http
           containerPort: 80
@@ -42,7 +42,7 @@ spec:
   type: ClusterIP
   ports:
   - name: frontend
-    port: 80
+    port: 8080
     protocol: TCP
     targetPort: 80
   selector:
