@@ -1,0 +1,100 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: demo
+  namespace: rpg-test
+spec:
+  selector:
+    istio: ingressgateway # use istio default ingress gateway
+  servers:
+  - port:
+      number: 443
+      name: https
+      protocol: HTTPS
+    tls:
+      mode: SIMPLE
+      credentialName: tlstest
+    hosts:
+    - "rpg.eastus.cloudapp.azure.com"
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: app-server
+  namespace: rpg-test
+spec:
+  hosts:
+  - "rpg.eastus.cloudapp.azure.com"
+  gateways:
+  - demo
+  http:
+  - match:
+    - uri:
+        exact: /session
+    - uri:
+        exact: /heros
+    - uri:
+        exact: /admin/hero
+    - uri:
+        exact: /session/fight
+    - uri:
+        exact: /session/archive
+    - uri:
+        exact: /session/level
+    - uri:
+        exact: /session/quit
+    - uri:
+        exact: /session/clear
+    route:
+    - destination:
+        host: app-server.rpg-test.svc.cluster.local
+        port:
+          number: 8000
+  - match:
+    - uri:
+        exact: /
+    - uri:
+       exact: /passcode
+    - uri:
+       exact: /auth/callback
+    - uri:
+       exact: /login
+    route:
+    - destination:
+        host: auth-server.rpg-test.svc.cluster.local
+        port:
+          number: 5555
+  - match:
+    - uri:
+        prefix: /dex
+    route:
+      - destination:
+          host: dex.rpg-test.svc.cluster.local
+          port:
+            number: 5556
+---
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: auth
+  namespace: rpg-test
+spec:
+  mtls:
+    mode: STRICT
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: grpc-iddletimeout-policy
+  namespace: rpg-test
+spec:
+  host: grpc-fight.rpg-test.svc.cluster.local
+  trafficPolicy:
+    connectionPool:
+      tcp:
+        connectTimeout: 30ms
+        tcpKeepalive:
+          time: 7200s
+          interval: 75s
+      http:
+        idleTimeout: 30m

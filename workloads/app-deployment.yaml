@@ -1,0 +1,308 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: app-server
+  name: app-server
+  namespace: rpg-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app-server
+  template:
+    metadata:
+      labels:
+        app: app-server
+    spec:
+      serviceAccountName: app-server
+      containers:
+      - name: app-server
+        env:
+        - name: GIN_MODE
+          value: debug
+        - name: DEBUG
+          value: "true"
+        image: tqhuang2021/app-server@sha256:92890e7af8ac8af86ac3894e0da17f36d0d4a483f076cf4819ea372175b78d62
+        args:
+        - --addr=grpc-fight.rpg-test.svc.cluster.local:8001
+        - --auth-server-addr=grpc-auth.rpg-test.svc.cluster.local:6666
+        ports:
+        - name: http
+          containerPort: 8000
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    app: app-server
+  name: app-server
+  namespace: rpg-test
+imagePullSecrets:
+- name: pipeline
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-server
+  namespace: rpg-test
+spec:
+  type: ClusterIP
+  ports:
+  - name: app-server
+    port: 8000
+    protocol: TCP
+    targetPort: 8000
+  selector:
+    app: app-server
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: auth-server
+  name: auth-server
+  namespace: rpg-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth-server
+  template:
+    metadata:
+      labels:
+        app: auth-server
+    spec:
+      serviceAccountName: auth-server
+      containers:
+      - name: auth-server
+        image: tqhuang2021/auth-server@sha256:429c0cf97ef6cce106c796288037026f19dbcf367e1ba42016ca615660246a4c
+        args:
+        - --issuer=https://rpg.eastus.cloudapp.azure.com/dex/dex
+        - --port=5555
+        - --grpc-port=6666
+        - --redirect-uri=https://rpg.eastus.cloudapp.azure.com/auth/callback
+        - --client-id=new-test-id
+        ports:
+        - name: http
+          containerPort: 5555
+        - name: grpc
+          containerPort: 6666
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    app: auth-server
+  name: auth-server
+  namespace: rpg-test
+imagePullSecrets:
+- name: pipeline 
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-server
+  namespace: rpg-test
+spec:
+  type: ClusterIP
+  ports:
+  - name: auth-server
+    port: 5555
+    protocol: TCP
+    targetPort: 5555
+  selector:
+    app: auth-server
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: grpc-fight
+  namespace: rpg-test
+spec:
+  type: ClusterIP
+  ports:
+  - name: fight-server
+    port: 8001
+    protocol: TCP
+    targetPort: 8001
+  selector:
+    app: fight-server
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: fight-server
+  name: fight-server
+  namespace: rpg-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fight-server
+  template:
+    metadata:
+      labels:
+        app: fight-server
+    spec:
+      serviceAccountName: fight-server
+      containers:
+      - name: fight-server
+        image: tqhuang2021/fight-server@sha256:867b0134485c1f89e8880d3700e0c54ca8d1a2dcb430203dac47185ef2e95c68
+        ports:
+        - name: grpc
+          containerPort: 8001
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    app: fight-server
+  name: fight-server
+  namespace: rpg-test
+imagePullSecrets:
+- name: pipeline
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: dex
+  name: dex
+  namespace: rpg-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dex
+  template:
+    metadata:
+      labels:
+        app: dex
+    spec:
+      serviceAccountName: dex # This is created below
+      containers:
+      - image: dexidp/dex:v2.27.0
+        name: dex
+        command: ["/usr/local/bin/dex", "serve", "/etc/dex/cfg/config.yaml"]
+        ports:
+        - name: http
+          containerPort: 5556
+        volumeMounts:
+        - name: config
+          mountPath: /etc/dex/cfg
+      volumes:
+      - name: config
+        configMap:
+          name: dex
+          items:
+          - key: config.yaml
+            path: config.yaml
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: dex
+  namespace: rpg-test
+data:
+  config.yaml: |
+    issuer: https://rpg.eastus.cloudapp.azure.com/dex/dex
+    storage:
+      type: kubernetes
+      config:
+        inCluster: true
+    web:
+      http: 0.0.0.0:5556
+    connectors:
+    - type: github
+      id: github
+      name: Github
+      config:
+        clientID: 81891bded5d946528777
+        clientSecret: 43d330874de294dc7f420e88b9a343bc80adb8dc
+        redirectURI: https://rpg.eastus.cloudapp.azure.com/dex/dex/callback
+        orgs:
+        - name: new-adventure-aerolite
+        teamNameField: slug
+        loadAllGroups: false
+        useLoginAsID: false
+    - type: mockCallback
+      id: mock
+      name: Example
+    staticClients:
+    - id: new-test-id
+      redirectURIs:
+      - 'https://rpg.eastus.cloudapp.azure.com/auth/callback'
+      name: 'Example App'
+      secret: ZXhhbXBsZS1hcHAtc2VjcmV0
+    enablePasswordDB: true
+    staticPasswords:
+    - email: "admin@example.com"
+      # bcrypt hash of the string "password"
+      hash: "$2a$10$2b2cU8CPhOTaGrs1HRQuAueS7JTT5ZHsHSzYiFPm1leZck7Mc8T4W"
+      username: "admin"
+      userID: "08a8684b-db88-4b73-90a9-3cd1661f5466"
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    app: dex
+  name: dex
+  namespace: rpg-test
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dex
+  namespace: rpg-test
+spec:
+  type: ClusterIP
+  ports:
+  - name: dex
+    port: 5556
+    protocol: TCP
+    targetPort: 5556
+  selector:
+    app: dex
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: dex-test
+rules:
+- apiGroups: ["dex.coreos.com"] # API group created by dex
+  resources: ["*"]
+  verbs: ["*"]
+- apiGroups: ["apiextensions.k8s.io"]
+  resources: ["customresourcedefinitions"]
+  verbs: ["create"] # To manage its own resources, dex must be able to create customresourcedefinitions
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: dex-test
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: dex
+subjects:
+- kind: ServiceAccount
+  name: dex           # Service account assigned to the dex pod, created above
+  namespace: rpg-test  # The namespace dex is running in
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: grpc-auth
+  namespace: rpg-test
+spec:
+  type: ClusterIP
+  ports:
+  - name: auth-server
+    port: 6666
+    protocol: TCP
+    targetPort: 6666
+  selector:
+    app: auth-server
