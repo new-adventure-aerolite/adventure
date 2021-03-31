@@ -23,7 +23,7 @@ spec:
           value: debug
         - name: DEBUG
           value: "true"
-        image: tqhuang2021/app-server@sha256:92890e7af8ac8af86ac3894e0da17f36d0d4a483f076cf4819ea372175b78d62
+        image: demoapp88985792.azurecr.io/app-server:latest
         args:
         - --addr=grpc-fight.rpg-test.svc.cluster.local:8001
         - --auth-server-addr=grpc-auth.rpg-test.svc.cluster.local:6666
@@ -76,7 +76,7 @@ spec:
       serviceAccountName: auth-server
       containers:
       - name: auth-server
-        image: tqhuang2021/auth-server@sha256:429c0cf97ef6cce106c796288037026f19dbcf367e1ba42016ca615660246a4c
+        image: demoapp88985792.azurecr.io/auth-server:latest
         args:
         - --issuer=https://rpg-game.eastus.cloudapp.azure.com/dex/dex
         - --port=5555
@@ -149,7 +149,7 @@ spec:
       serviceAccountName: fight-server
       containers:
       - name: fight-server
-        image: tqhuang2021/fight-server@sha256:867b0134485c1f89e8880d3700e0c54ca8d1a2dcb430203dac47185ef2e95c68
+        image: demoapp88985792.azurecr.io/fight-server:latest
         ports:
         - name: grpc
           containerPort: 8001
