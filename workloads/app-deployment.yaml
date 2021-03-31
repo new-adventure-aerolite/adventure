@@ -24,6 +24,7 @@ spec:
         - name: DEBUG
           value: "true"
         image: demoapp88985792.azurecr.io/app-server:latest
+        imagePullPolicy: Always
         args:
         - --addr=grpc-fight.rpg-test.svc.cluster.local:8001
         - --auth-server-addr=grpc-auth.rpg-test.svc.cluster.local:6666
@@ -77,6 +78,7 @@ spec:
       containers:
       - name: auth-server
         image: demoapp88985792.azurecr.io/auth-server:latest
+        imagePullPolicy: Always
         args:
         - --issuer=https://rpg-game.eastus.cloudapp.azure.com/dex/dex
         - --port=5555
@@ -150,6 +152,7 @@ spec:
       containers:
       - name: fight-server
         image: demoapp88985792.azurecr.io/fight-server:latest
+        imagePullPolicy: Always
         ports:
         - name: grpc
           containerPort: 8001
@@ -184,6 +187,7 @@ spec:
       serviceAccountName: dex # This is created below
       containers:
       - image: dexidp/dex:v2.27.0
+        imagePullPolicy: Always
         name: dex
         command: ["/usr/local/bin/dex", "serve", "/etc/dex/cfg/config.yaml"]
         ports:

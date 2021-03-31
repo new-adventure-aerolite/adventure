@@ -19,6 +19,7 @@ spec:
       containers:
       - name: frontend
         image: demoapp88985792.azurecr.io/frontend:latest
+        imagePullPolicy: Always
         ports:
         - name: http
           containerPort: 80
