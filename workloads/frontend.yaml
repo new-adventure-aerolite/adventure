@@ -31,8 +31,6 @@ metadata:
     app: frontend
   name: frontend
   namespace: rpg-test
-imagePullSecrets:
-- name: pipeline
 ---
 apiVersion: v1
 kind: Service

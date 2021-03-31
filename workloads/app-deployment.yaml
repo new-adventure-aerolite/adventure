@@ -46,8 +46,6 @@ metadata:
     app: app-server
   name: app-server
   namespace: rpg-test
-imagePullSecrets:
-- name: pipeline
 ---
 apiVersion: v1
 kind: Service
@@ -105,8 +103,6 @@ metadata:
     app: auth-server
   name: auth-server
   namespace: rpg-test
-imagePullSecrets:
-- name: pipeline 
 ---
 apiVersion: v1
 kind: Service
@@ -171,8 +167,6 @@ metadata:
     app: fight-server
   name: fight-server
   namespace: rpg-test
-imagePullSecrets:
-- name: pipeline
 ---
 apiVersion: apps/v1
 kind: Deployment
