@@ -143,11 +143,7 @@ spec:
     - destination:
         host: grpc-fight.rpg-test.svc.cluster.local
         subset: fight-server-v2
-  - match:
-    - headers:
-        user-type:
-          exact: normal
-    route:
+  - route:
     - destination:
         host: grpc-fight.rpg-test.svc.cluster.local
         subset: fight-server-v1
