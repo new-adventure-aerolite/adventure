@@ -1,11 +1,10 @@
 ```
-
-██████╗░██████╗░  ░██████╗░░█████╗░███╗░░░███╗███████╗
-██╔══██╗██╔══██╗  ██╔════╝░██╔══██╗████╗░████║██╔════╝
-██║░░██║██████╦╝  ██║░░██╗░███████║██╔████╔██║█████╗░░
-██║░░██║██╔══██╗  ██║░░╚██╗██╔══██║██║╚██╔╝██║██╔══╝░░
-██████╔╝██████╦╝  ╚██████╔╝██║░░██║██║░╚═╝░██║███████╗
-╚═════╝░╚═════╝░  ░╚═════╝░╚═╝░░╚═╝╚═╝░░░░░╚═╝╚══════╝
+        ████████╗██╗░░██╗███████╗  ██╗░░██╗██╗███╗░░██╗░██████╗░  ░█████╗░███████╗  ██████╗░██████╗░
+        ╚══██╔══╝██║░░██║██╔════╝  ██║░██╔╝██║████╗░██║██╔════╝░  ██╔══██╗██╔════╝  ██╔══██╗██╔══██╗
+        ░░░██║░░░███████║█████╗░░  █████═╝░██║██╔██╗██║██║░░██╗░  ██║░░██║█████╗░░  ██║░░██║██████╦╝
+        ░░░██║░░░██╔══██║██╔══╝░░  ██╔═██╗░██║██║╚████║██║░░╚██╗  ██║░░██║██╔══╝░░  ██║░░██║██╔══██╗
+        ░░░██║░░░██║░░██║███████╗  ██║░╚██╗██║██║░╚███║╚██████╔╝  ╚█████╔╝██║░░░░░  ██████╔╝██████╦╝
+        ░░░╚═╝░░░╚═╝░░╚═╝╚══════╝  ╚═╝░░╚═╝╚═╝╚═╝░░╚══╝░╚═════╝░  ░╚════╝░╚═╝░░░░░  ╚═════╝░╚═════╝░
 ```
 
 # Adventure  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -52,8 +51,29 @@ The children projects are:
 
 The overall funny architecture is as the below figure illustrates: 
 
-![The-Architecture](./docs/adventure-arch.svg)
+![The-Architecture](./docs/adventure-arch.png)
 *Fig-1 The Architecture* 
+
+The term of `dominator` stands for the developer creates all of code 
+include IAC (Infrastructure-As-Code), Kubernetes workload manifests and
+all runtime (orange colored rectange from the above figure) code.
+
+### Additional Offerings
+
+As multiple add-on is in the infrastructure stack, they offers some basic 
+operation friendly features:
+
+1. Istio's distributed tracing. The span can be propagated from 
+   Istio ingress gateway to each PostgreSQL's call.
+2. The CNPO (Cloud Native Postgres Operator) creates and manages one HA 
+   PG clusters.
+3. Prometheus and Grafana are configured to scrape the istio-proxy's 
+   telemetry and present them in pre-defined form.
+4. Dex is used as identity service, which could be configured as client 
+   application and connect to different IDPs(Identity Provider).
+5. Canary deployment of fight-servers: player from the `admin` team 
+   (on Github game organization) is routed to fight-server workload with 
+   special treat to win every round of fight.
 
 ## Questions
 
