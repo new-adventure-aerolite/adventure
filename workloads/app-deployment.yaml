@@ -152,6 +152,7 @@ spec:
     metadata:
       labels:
         app: fight-server
+        version: fight-server-v1
     spec:
       serviceAccountName: fight-server
       containers:
@@ -175,6 +176,7 @@ spec:
   selector:
     matchLabels:
       app: fight-server
+      version: fight-server-v2
   template:
     metadata:
       labels:
