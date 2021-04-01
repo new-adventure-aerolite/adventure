@@ -30,7 +30,7 @@ spec:
           value: debug
         - name: DEBUG
           value: "true"
-        image: demoapp88985792.azurecr.io/app-server:betav1
+        image: demoapp88985792.azurecr.io/app-server:latest
         imagePullPolicy: Always
         args:
         - --addr=grpc-fight.rpg-test.svc.cluster.local:8001
