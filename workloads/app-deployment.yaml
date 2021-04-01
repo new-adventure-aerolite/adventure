@@ -132,7 +132,7 @@ spec:
     protocol: TCP
     targetPort: 8001
   selector:
-    version: fight-server-v2
+    app: fight-server
 ---
 apiVersion: apps/v1
 kind: Deployment

@@ -125,25 +125,25 @@ spec:
           interval: 75s
       http:
         idleTimeout: 30m
-# ---
-# apiVersion: networking.istio.io/v1alpha3
-# kind: VirtualService
-# metadata:
-#   name: fight-server
-#   namespace: rpg-test
-# spec:
-#   hosts: 
-#   - grpc-fight.rpg-test.svc.cluster.local
-#   http:
-#   - match:
-#     - headers:
-#         user-type:
-#           exact: admin
-#     route:
-#     - destination:
-#         host: grpc-fight.rpg-test.svc.cluster.local
-#         subset: fight-server-v2
-#   - route:
-#     - destination:
-#         host: grpc-fight.rpg-test.svc.cluster.local
-#         subset: fight-server-v1
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: fight-server
+  namespace: rpg-test
+spec:
+  hosts: 
+  - grpc-fight.rpg-test.svc.cluster.local
+  http:
+  - match:
+    - headers:
+        user-type:
+          exact: admin
+    route:
+    - destination:
+        host: grpc-fight.rpg-test.svc.cluster.local
+        subset: fight-server-v2
+  - route:
+    - destination:
+        host: grpc-fight.rpg-test.svc.cluster.local
+        subset: fight-server-v1
