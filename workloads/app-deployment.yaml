@@ -30,7 +30,7 @@ spec:
           value: debug
         - name: DEBUG
           value: "true"
-        image: demoapp88985792.azurecr.io/app-server:latest
+        image: demoapp88985792.azurecr.io/app-server:betav1
         imagePullPolicy: Always
         args:
         - --addr=grpc-fight.rpg-test.svc.cluster.local:8001
@@ -139,7 +139,8 @@ kind: Deployment
 metadata:
   labels:
     app: fight-server
-  name: fight-server
+    version: fight-server-v1
+  name: fight-server-v1
   namespace: rpg-test
 spec:
   replicas: 1
@@ -155,6 +156,33 @@ spec:
       containers:
       - name: fight-server
         image: demoapp88985792.azurecr.io/fight-server:latest
+        imagePullPolicy: Always
+        ports:
+        - name: grpc
+          containerPort: 8001
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: fight-server
+    version: fight-server-v2
+  name: fight-server-v2
+  namespace: rpg-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fight-server
+  template:
+    metadata:
+      labels:
+        app: fight-server
+    spec:
+      serviceAccountName: fight-server
+      containers:
+      - name: fight-server
+        image: demoapp88985792.azurecr.io/fight-server:betav1
         imagePullPolicy: Always
         ports:
         - name: grpc

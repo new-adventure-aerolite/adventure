@@ -105,10 +105,17 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
-  name: grpc-iddletimeout-policy
+  name: grpc-fight
   namespace: rpg-test
 spec:
   host: grpc-fight.rpg-test.svc.cluster.local
+  subsets:
+  - name: fight-server-v1
+    labels:
+      version: fight-server-v1
+  - name: fight-server-v2
+    labels:
+      version: fight-server-v2
   trafficPolicy:
     connectionPool:
       tcp:
@@ -118,3 +125,25 @@ spec:
           interval: 75s
       http:
         idleTimeout: 30m
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: fight-server
+  namespace: rpg-test
+spec:
+  hosts: 
+  - grpc-fight.rpg-test.svc.cluster.local
+  http:
+  - match:
+    - headers:
+        user-type:
+          exact: admin
+    route:
+    - destination:
+        host: grpc-fight.rpg-test.svc.cluster.local
+        subset: fight-server-v2
+  - route:
+    - destination:
+        host: ratigrpc-fight.rpg-test.svc.cluster.localngs
+        subset: fight-server-v1
