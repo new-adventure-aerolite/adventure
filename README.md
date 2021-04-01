@@ -25,7 +25,7 @@ Just pretend you are typing in your terminal.
 
 Click the below figure for a recorded playback. 
 
-[![Game-CLI-UI](./docs/game-cli-ui.png)](https://asciinema.org/a/404126)
+[![Game-CLI-UI](./docs/game-cli-ui.png)](https://asciinema.org/a/404325)
 
 ### When your boss is not in the office
 
