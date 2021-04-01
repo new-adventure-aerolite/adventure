@@ -147,3 +147,4 @@ spec:
     - destination:
         host: grpc-fight.rpg-test.svc.cluster.local
         subset: fight-server-v1
+
