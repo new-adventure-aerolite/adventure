@@ -147,6 +147,7 @@ spec:
   selector:
     matchLabels:
       app: fight-server
+      version: fight-server-v1
   template:
     metadata:
       labels:
@@ -178,6 +179,7 @@ spec:
     metadata:
       labels:
         app: fight-server
+        version: fight-server-v2
     spec:
       serviceAccountName: fight-server
       containers:
