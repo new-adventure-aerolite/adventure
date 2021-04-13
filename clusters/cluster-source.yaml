@@ -1,0 +1,14 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: GitRepository
+metadata:
+  name: flux-v2
+  namespace: flux-system
+spec:
+  interval: 3s
+  ref:
+    branch: test
+  secretRef:
+    name: test-auth
+  url: ssh://git@github.com/new-adventure-aerolite/adventure.git
+
