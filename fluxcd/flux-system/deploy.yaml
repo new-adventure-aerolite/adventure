@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kustomize-controller
+  namespace: flux-system
+spec:
+  template:
+    metadata:
+      labels:
+        aadpodidbinding: sops-akv-decryptor  # match the AzureIdentity name
+    spec:
+      containers:
+      - name: manager
+        env:
+        - name: AZURE_AUTH_METHOD
+          value: msi
+        - name: USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: repo-auth
+              key: username
+        - name: PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: repo-auth
+              key: password
+        image: hfallife/kustomize-controller:xhack
+        lifecycle:
+          postStart:
+            exec:
+              command:
+                - sh
+                - "-c"
+                - echo "machine github.com login username $USERNAME password $PASSWORD" > ~/.netrc
+        volumeMounts:
+        - mountPath: /home/controller
+          name: auth
+      volumes:
+      - emptyDir: {}
+        name: auth
+      #   volumeMounts:
+      #   - mountPath: /home/controller
+      #     name: controller
+      # volumes:
+      # - emptyDir: {}
+      #   name: controller 
+
