@@ -9,8 +9,8 @@ spec:
   ref:
     branch: test
   secretRef:
-    name: flux-auth
-  url: ssh://git@github.com/new-adventure-aerolite/adventure
+    name: flux-system
+  url: https://github.com/new-adventure-aerolite/adventure.git
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1beta1
 kind: Kustomization
